@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Praktikums-Bewerbungsmanager - Fachinformatiker Systemintegration</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: {
+                DEFAULT: '#C0152F',
+                600: '#A31228',
+                700: '#8A0F22'
+              }
+            },
+            fontFamily: {
+              sans: ["Inter", "ui-sans-serif", "system-ui", "-apple-system", "Segoe UI", "Roboto", "sans-serif"],
+            }
+          }
+        }
+      }
+    </script>
+</head>
+<body class="bg-slate-900 font-sans antialiased">
+    <div class="flex min-h-screen">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-slate-800 border-r border-slate-700 p-6 flex flex-col gap-6">
+            <div>
+                <div class="text-xl font-bold text-primary mb-2">Praktikums-Manager</div>
+                <div class="text-sm text-slate-400 leading-snug">Fachinformatiker Systemintegration</div>
+            </div>
+            
+            <nav class="flex flex-col gap-1" id="navigation">
+                <div class="nav__item nav__item--active flex items-center gap-2 px-3 py-2.5 rounded-lg cursor-pointer transition-colors bg-primary text-white font-medium" data-view="dashboard">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 3v18h18"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 13l3-3 4 4 5-6"/></svg>
+                    Dashboard
+                </div>
+                <div class="nav__item flex items-center gap-2 px-3 py-2.5 rounded-lg cursor-pointer transition-colors hover:bg-slate-700 text-slate-300 font-medium" data-view="companies">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 7l9-4 9 4v10a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/></svg>
+                    Alle Unternehmen
+                </div>
+                <div class="nav__item flex items-center gap-2 px-3 py-2.5 rounded-lg cursor-pointer transition-colors hover:bg-slate-700 text-slate-300 font-medium" data-view="projects">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a7 7 0 00-7 7 7 7 0 003 5.7V20a2 2 0 002 2h4a2 2 0 002-2v-5.3A7 7 0 0019 9a7 7 0 00-7-7z"/></svg>
+                    Projekt-Ideen
+                </div>
+                <div class="nav__item flex items-center gap-2 px-3 py-2.5 rounded-lg cursor-pointer transition-colors hover:bg-slate-700 text-slate-300 font-medium" data-view="add-company">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4v16m8-8H4"/></svg>
+                    Unternehmen hinzufügen
+                </div>
+            </nav>
+            
+            <div id="sidebar-info" class="border border-slate-700 rounded-lg p-4 bg-slate-700/50 mt-auto">
+                <div class="text-sm font-medium mb-2 text-slate-200">Praktikumszeitraum</div>
+                <div class="text-xs text-slate-400 leading-relaxed" id="sidebar-info-content">
+                    Lade...
+                </div>
+            </div>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="flex-1 p-8 overflow-y-auto">
+            <!-- Dashboard View -->
+            <div id="view-dashboard" class="view">
+                <div class="mb-8">
+                    <h1 class="text-3xl font-semibold text-slate-100 mb-2">Dashboard</h1>
+                    <p class="text-lg text-slate-400">Übersicht über Ihre Praktikumsbewerbungen</p>
+                </div>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8" id="stats-grid">
+                    <div class="bg-slate-800 border border-slate-700 rounded-xl p-5 flex flex-col gap-2 shadow-sm">
+                        <div class="text-sm text-slate-400 font-medium">Gesamt Unternehmen</div>
+                        <div class="text-3xl font-bold text-slate-100" id="stat-total">0</div>
+                    </div>
+                    <div class="bg-slate-800 border border-slate-700 rounded-xl p-5 flex flex-col gap-2 shadow-sm">
+                        <div class="text-sm text-slate-400 font-medium">Entwürfe</div>
+                        <div class="text-3xl font-bold text-slate-100" id="stat-draft">0</div>
+                    </div>
+                    <div class="bg-slate-800 border border-slate-700 rounded-xl p-5 flex flex-col gap-2 shadow-sm">
+                        <div class="text-sm text-slate-400 font-medium">Versendet</div>
+                        <div class="text-3xl font-bold text-slate-100" id="stat-sent">0</div>
+                    </div>
+                    <div class="bg-slate-800 border border-slate-700 rounded-xl p-5 flex flex-col gap-2 shadow-sm">
+                        <div class="text-sm text-slate-400 font-medium">Vorstellungsgespräche</div>
+                        <div class="text-3xl font-bold text-slate-100" id="stat-interview">0</div>
+                    </div>
+                    <div class="bg-slate-800 border border-slate-700 rounded-xl p-5 flex flex-col gap-2 shadow-sm">
+                        <div class="text-sm text-slate-400 font-medium">Angenommen</div>
+                        <div class="text-3xl font-bold text-slate-100" id="stat-accepted">0</div>
+                    </div>
+                </div>
+                
+                <div id="dashboard-info-cards" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+                    <!-- Info cards will be dynamically inserted here -->
+                </div>
+            </div>
+            
+            <!-- Companies View -->
+            <div id="view-companies" class="view" style="display: none;">
+                <div class="mb-8">
+                    <h1 class="text-3xl font-semibold text-slate-100 mb-2">Alle Unternehmen</h1>
+                    <p class="text-lg text-slate-400">Verwalten Sie Ihre Bewerbungsliste</p>
+                </div>
+                
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                    <div class="flex-1 min-w-[250px] max-w-md">
+                        <input type="text" class="w-full px-4 py-2 bg-slate-800 border border-slate-600 text-slate-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent placeholder-slate-500" id="search-input" placeholder="Unternehmen suchen...">
+                    </div>
+                    <div class="flex flex-wrap gap-3">
+                        <select class="px-4 py-2 bg-slate-800 border border-slate-600 text-slate-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" id="filter-status">
+                            <option value="">Alle Status</option>
+                            <option value="Noch nicht gestartet">Noch nicht gestartet</option>
+                            <option value="Entwurf">Entwurf</option>
+                            <option value="Versendet">Versendet</option>
+                            <option value="Vorstellungsgespräch geplant">Vorstellungsgespräch</option>
+                            <option value="Angenommen">Angenommen</option>
+                            <option value="Abgelehnt">Abgelehnt</option>
+                        </select>
+                        <select class="px-4 py-2 bg-slate-800 border border-slate-600 text-slate-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" id="filter-focus">
+                            <option value="">Alle Bereiche</option>
+                            <option value="Netzwerktechnik">Netzwerktechnik</option>
+                            <option value="Cybersecurity">Cybersecurity</option>
+                            <option value="Cloud Computing">Cloud Computing</option>
+                            <option value="IT-Infrastruktur">IT-Infrastruktur</option>
+                        </select>
+                        <button class="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-lg font-medium transition-colors flex items-center gap-2" onclick="exportToCSV()">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                            CSV Export
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-sm">
+                    <table class="w-full border-collapse">
+                        <thead>
+                            <tr class="bg-slate-700 border-b border-slate-600">
+                                <th onclick="sortTable('name')" class="px-4 py-3 text-left text-xs font-semibold text-slate-200 cursor-pointer hover:bg-slate-600 select-none">Unternehmen ⇅</th>
+                                <th onclick="sortTable('focus')" class="px-4 py-3 text-left text-xs font-semibold text-slate-200 cursor-pointer hover:bg-slate-600 select-none">Schwerpunkt ⇅</th>
+                                <th onclick="sortTable('contact')" class="px-4 py-3 text-left text-xs font-semibold text-slate-200 cursor-pointer hover:bg-slate-600 select-none">Kontakt ⇅</th>
+                                <th onclick="sortTable('status')" class="px-4 py-3 text-left text-xs font-semibold text-slate-200 cursor-pointer hover:bg-slate-600 select-none">Status ⇅</th>
+                                <th onclick="sortTable('applicationDate')" class="px-4 py-3 text-left text-xs font-semibold text-slate-200 cursor-pointer hover:bg-slate-600 select-none">Datum ⇅</th>
+                                <th class="px-4 py-3 text-left text-xs font-semibold text-slate-200">Aktionen</th>
+                            </tr>
+                        </thead>
+                        <tbody id="companies-table-body" class="divide-y divide-slate-700">
+                            <!-- Companies will be dynamically inserted here -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div id="empty-companies" class="text-center py-16" style="display: none;">
+                    <div class="mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 7l9-4 9 4v10a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/></svg>
+                    </div>
+                    <div class="text-xl font-semibold text-slate-100 mb-2">Noch keine Unternehmen hinzugefügt</div>
+                    <p class="text-slate-400 mb-6">Fügen Sie Ihr erstes Unternehmen hinzu, um zu beginnen.</p>
+                    <button class="px-6 py-3 bg-primary hover:bg-primary-600 text-white rounded-lg font-medium transition-colors" onclick="showView('add-company')">Unternehmen hinzufügen</button>
+                </div>
+            </div>
+            
+            <!-- Projects View -->
+            <div id="view-projects" class="view" style="display: none;">
+                <div class="mb-8">
+                    <h1 class="text-3xl font-semibold text-slate-100 mb-2">Projekt-Ideen</h1>
+                    <p class="text-lg text-slate-400">Mögliche Projekte für die Abschlussprüfung</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="projects-grid">
+                    <!-- Projects will be dynamically inserted here -->
+                </div>
+            </div>
+            
+            <!-- Add Company View -->
+            <div id="view-add-company" class="view" style="display: none;">
+                <div class="mb-8">
+                    <h1 class="text-3xl font-semibold text-slate-100 mb-2" id="form-title">Unternehmen hinzufügen</h1>
+                    <p class="text-lg text-slate-400">Erfassen Sie alle relevanten Informationen</p>
+                </div>
+                
+                <div class="bg-slate-800 border border-slate-700 rounded-xl shadow-sm overflow-hidden">
+                    <div class="p-6">
+                        <form id="company-form">
+                            <input type="hidden" id="edit-id">
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                                <div>
+                                    <label class="block mb-2 text-sm font-medium text-slate-200" for="company-name">Unternehmensname *</label>
+                                    <input type="text" class="w-full px-4 py-2 bg-slate-700 border border-slate-600 text-slate-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent placeholder-slate-500" id="company-name" required>
+                                </div>
+                                
+                                <div>
+                                    <label class="block mb-2 text-sm font-medium text-slate-200" for="company-focus">Schwerpunkt *</label>
+                                    <select class="w-full px-4 py-2 bg-slate-700 border border-slate-600 text-slate-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" id="company-focus" required>
+                                        <option value="">Bitte wählen...</option>
+                                        <option value="Netzwerktechnik">Netzwerktechnik</option>
+                                        <option value="Cybersecurity">Cybersecurity</option>
+                                        <option value="IT-Infrastruktur">IT-Infrastruktur</option>
+                                        <option value="Cloud Computing">Cloud Computing</option>
+                                        <option value="Systemintegration">Systemintegration</option>
+                                        <option value="IT-Service">IT-Service</option>
+                                        <option value="Managed Services">Managed Services</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                                <div>
+                                    <label class="block mb-2 text-sm font-medium text-slate-200" for="company-city">Stadt</label>
+                                    <input type="text" class="w-full px-4 py-2 bg-slate-700 border border-slate-600 text-slate-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent placeholder-slate-500" id="company-city">
+                                </div>
+                                
+                                <div>
+                                    <label class="block mb-2 text-sm font-medium text-slate-200" for="company-industry">Branche</label>
+                                    <input type="text" class="w-full px-4 py-2 bg-slate-700 border border-slate-600 text-slate-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent placeholder-slate-500" id="company-industry" placeholder="z.B. IT-Sicherheit, IT-Dienstleistungen">
+                                </div>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                                <div>
+                                    <label class="block mb-2 text-sm font-medium text-slate-200" for="company-contact">Ansprechpartner</label>
+                                    <input type="text" class="w-full px-4 py-2 bg-slate-700 border border-slate-600 text-slate-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent placeholder-slate-500" id="company-contact">
+                                </div>
+                                
+                                <div>
+                                    <label class="block mb-2 text-sm font-medium text-slate-200" for="company-contact-title">Titel/Position</label>
+                                    <input type="text" class="w-full px-4 py-2 bg-slate-700 border border-slate-600 text-slate-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent placeholder-slate-500" id="company-contact-title" placeholder="z.B. Geschäftsführer, HR Manager">
+                                </div>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                                <div>
+                                    <label class="block mb-2 text-sm font-medium text-slate-200" for="company-email">E-Mail</label>
+                                    <input type="email" class="w-full px-4 py-2 bg-slate-700 border border-slate-600 text-slate-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent placeholder-slate-500" id="company-email">
+                                </div>
+                                
+                                <div>
+                                    <label class="block mb-2 text-sm font-medium text-slate-200" for="company-phone">Telefon</label>
+                                    <input type="tel" class="w-full px-4 py-2 bg-slate-700 border border-slate-600 text-slate-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent placeholder-slate-500" id="company-phone">
+                                </div>
+                            </div>
+                            
+                            <div class="mb-6">
+                                <label class="block mb-2 text-sm font-medium text-slate-200" for="company-website">Website</label>
+                                <input type="url" class="w-full px-4 py-2 bg-slate-700 border border-slate-600 text-slate-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent placeholder-slate-500" id="company-website">
+                            </div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                                <div>
+                                    <label class="block mb-2 text-sm font-medium text-slate-200" for="company-status">Status *</label>
+                                    <select class="w-full px-4 py-2 bg-slate-700 border border-slate-600 text-slate-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" id="company-status" required>
+                                        <option value="Noch nicht gestartet">Noch nicht gestartet</option>
+                                        <option value="Entwurf">Entwurf</option>
+                                        <option value="Versendet">Versendet</option>
+                                        <option value="Vorstellungsgespräch geplant">Vorstellungsgespräch geplant</option>
+                                        <option value="Angenommen">Angenommen</option>
+                                        <option value="Abgelehnt">Abgelehnt</option>
+                                    </select>
+                                </div>
+                                
+                                <div>
+                                    <label class="block mb-2 text-sm font-medium text-slate-200" for="company-application-date">Bewerbungsdatum</label>
+                                    <input type="date" class="w-full px-4 py-2 bg-slate-700 border border-slate-600 text-slate-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" id="company-application-date">
+                                </div>
+                            </div>
+                            
+                            <div class="mb-6">
+                                <label class="block mb-2 text-sm font-medium text-slate-200" for="company-followup-date">Follow-up Datum</label>
+                                <input type="date" class="w-full px-4 py-2 bg-slate-700 border border-slate-600 text-slate-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" id="company-followup-date">
+                            </div>
+                            
+                            <div class="mb-6">
+                                <label class="block mb-2 text-sm font-medium text-slate-200" for="company-special-features">Besonderheiten</label>
+                                <textarea class="w-full px-4 py-2 bg-slate-700 border border-slate-600 text-slate-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-y min-h-[80px] placeholder-slate-500" id="company-special-features" rows="3" placeholder="z.B. Spezialisiert auf IT-Security Beratung, Managed IT Services"></textarea>
+                            </div>
+                            
+                            <div class="mb-6">
+                                <label class="block mb-2 text-sm font-medium text-slate-200" for="company-notes">Notizen</label>
+                                <textarea class="w-full px-4 py-2 bg-slate-700 border border-slate-600 text-slate-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-y min-h-[100px] placeholder-slate-500" id="company-notes" rows="4"></textarea>
+                            </div>
+                            
+                            <div class="flex gap-3 justify-end">
+                                <button type="button" class="px-6 py-2.5 border border-slate-600 hover:bg-slate-700 text-slate-200 rounded-lg font-medium transition-colors" onclick="cancelForm()">Abbrechen</button>
+                                <button type="submit" class="px-6 py-2.5 bg-primary hover:bg-primary-600 text-white rounded-lg font-medium transition-colors">Speichern</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Company Detail View -->
+            <div id="view-company-detail" class="view" style="display: none;">
+                <div class="max-w-4xl">
+                    <button class="mb-4 px-4 py-2 border border-slate-600 hover:bg-slate-700 text-slate-200 rounded-lg font-medium transition-colors flex items-center gap-2" onclick="showView('companies')">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                        Zurück zur Liste
+                    </button>
+                    
+                    <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 mb-6 shadow-sm">
+                        <h1 class="text-3xl font-semibold text-slate-100 mb-3" id="detail-company-name">Unternehmensname</h1>
+                        <div id="detail-company-status" class="inline-block mb-4"></div>
+                        <div class="flex gap-3 mt-4">
+                            <button class="px-6 py-2.5 bg-primary hover:bg-primary-600 text-white rounded-lg font-medium transition-colors" onclick="editCompanyFromDetail()">Bearbeiten</button>
+                            <button class="px-6 py-2.5 border border-slate-600 hover:bg-slate-700 text-slate-200 rounded-lg font-medium transition-colors" onclick="deleteCompanyFromDetail()">Löschen</button>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 mb-4 shadow-sm">
+                        <h3 class="text-xl font-semibold text-slate-100 mb-4">Kontaktinformationen</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="flex flex-col gap-1">
+                                <div class="text-sm text-slate-400 font-medium">Schwerpunkt</div>
+                                <div class="text-base text-slate-100" id="detail-focus">-</div>
+                            </div>
+                            <div class="flex flex-col gap-1">
+                                <div class="text-sm text-slate-400 font-medium">Stadt</div>
+                                <div class="text-base text-slate-100" id="detail-city">-</div>
+                            </div>
+                            <div class="flex flex-col gap-1">
+                                <div class="text-sm text-slate-400 font-medium">Branche</div>
+                                <div class="text-base text-slate-100" id="detail-industry">-</div>
+                            </div>
+                            <div class="flex flex-col gap-1">
+                                <div class="text-sm text-slate-400 font-medium">Ansprechpartner</div>
+                                <div class="text-base text-slate-100" id="detail-contact">-</div>
+                            </div>
+                            <div class="flex flex-col gap-1">
+                                <div class="text-sm text-slate-400 font-medium">Titel/Position</div>
+                                <div class="text-base text-slate-100" id="detail-contact-title">-</div>
+                            </div>
+                            <div class="flex flex-col gap-1">
+                                <div class="text-sm text-slate-400 font-medium">E-Mail</div>
+                                <div class="text-base text-slate-100" id="detail-email">-</div>
+                            </div>
+                            <div class="flex flex-col gap-1">
+                                <div class="text-sm text-slate-400 font-medium">Telefon</div>
+                                <div class="text-base text-slate-100" id="detail-phone">-</div>
+                            </div>
+                            <div class="flex flex-col gap-1 md:col-span-2">
+                                <div class="text-sm text-slate-400 font-medium">Website</div>
+                                <div class="text-base text-slate-100" id="detail-website">-</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 mb-4 shadow-sm">
+                        <h3 class="text-xl font-semibold text-slate-100 mb-4">Bewerbungsinformationen</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="flex flex-col gap-1">
+                                <div class="text-sm text-slate-400 font-medium">Bewerbungsdatum</div>
+                                <div class="text-base text-slate-100" id="detail-application-date">-</div>
+                            </div>
+                            <div class="flex flex-col gap-1">
+                                <div class="text-sm text-slate-400 font-medium">Follow-up Datum</div>
+                                <div class="text-base text-slate-100" id="detail-followup-date">-</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 mb-4 shadow-sm">
+                        <h3 class="text-xl font-semibold text-slate-100 mb-4">Besonderheiten</h3>
+                        <p id="detail-special-features" class="text-slate-300 leading-relaxed">-</p>
+                    </div>
+                    
+                    <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-sm">
+                        <h3 class="text-xl font-semibold text-slate-100 mb-4">Notizen</h3>
+                        <p id="detail-notes" class="text-slate-300 leading-relaxed">-</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script>
+        // In-memory data storage
+        let companies = [];
+        let config = null;
+        let currentView = 'dashboard';
+        let currentDetailId = null;
+        let sortColumn = 'name';
+        let sortDirection = 'asc';
+        
+        // Project ideas data
+        const projectIdeas = [
+            {
+                title: "Firewall-Migration",
+                description: "Migration einer bestehenden Firewall zu einem neuen System",
+                relevance: "Cybersecurity, Netzwerktechnik",
+                complexity: "Mittel bis Hoch"
+            },
+            {
+                title: "Netzwerksegmentierung",
+                description: "Implementierung von VLANs und Netzwerksegmentierung für erhöhte Sicherheit",
+                relevance: "Netzwerktechnik, Cybersecurity",
+                complexity: "Mittel"
+            },
+            {
+                title: "Patch Management Implementierung",
+                description: "Aufbau eines zentralisierten Patchmanagementsystems zur Software-Verteilung",
+                relevance: "Systemintegration, Cybersecurity",
+                complexity: "Mittel"
+            },
+            {
+                title: "Zero-Trust-Umgebung",
+                description: "Konzeption und Umsetzung einer Zero-Trust-Sicherheitsarchitektur",
+                relevance: "Cybersecurity, IT-Infrastruktur",
+                complexity: "Hoch"
+            },
+            {
+                title: "Linux-Server Einbindung",
+                description: "Integration von Linux-Servern in bestehende Windows-Netzwerk-Umgebung",
+                relevance: "Netzwerktechnik, Systemintegration",
+                complexity: "Mittel"
+            },
+            {
+                title: "VPN-Konfiguration",
+                description: "Einrichtung und Konfiguration von VPN für sichere Remote-Verbindungen",
+                relevance: "Netzwerktechnik, Cybersecurity",
+                complexity: "Mittel bis Hoch"
+            },
+            {
+                title: "Cloud-Migration",
+                description: "Planung und Durchführung einer Migration zu Cloud-Services (Azure/AWS)",
+                relevance: "Cloud Computing, Systemintegration",
+                complexity: "Hoch"
+            }
+        ];
+        
+        // Backend API helpers
+        async function apiLoadCompanies() {
+            const res = await fetch('/api/companies');
+            if (!res.ok) throw new Error('Laden der Unternehmen fehlgeschlagen');
+            return await res.json();
+        }
+
+        async function apiLoadConfig() {
+            const res = await fetch('/api/config');
+            if (!res.ok) throw new Error('Laden der Konfiguration fehlgeschlagen');
+            return await res.json();
+        }
+
+        async function apiCreateCompany(company) {
+            const res = await fetch('/api/companies', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(company)
+            });
+            if (!res.ok) throw new Error('Speichern fehlgeschlagen');
+            return await res.json();
+        }
+
+        async function apiUpdateCompany(id, company) {
+            const res = await fetch(`/api/companies/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(company)
+            });
+            if (!res.ok) throw new Error('Aktualisieren fehlgeschlagen');
+            return await res.json();
+        }
+
+        async function apiDeleteCompany(id) {
+            const res = await fetch(`/api/companies/${id}`, { method: 'DELETE' });
+            if (!res.ok && res.status !== 204) throw new Error('Löschen fehlgeschlagen');
+        }
+        
+        // Initialize app
+        async function init() {
+            try {
+                companies = await apiLoadCompanies();
+            } catch (e) {
+                companies = [];
+                console.error(e);
+                alert('Hinweis: Konnte Daten nicht laden. Stellen Sie sicher, dass der Server läuft.');
+            }
+            try {
+                config = await apiLoadConfig();
+            } catch (e) {
+                console.error(e);
+                config = null;
+            }
+            setupEventListeners();
+            renderSidebarInfo();
+            renderDashboard();
+            renderCompaniesTable();
+            renderProjects();
+        }
+        
+        // Setup event listeners
+        function setupEventListeners() {
+            // Navigation
+            document.querySelectorAll('.nav__item').forEach(item => {
+                item.addEventListener('click', function() {
+                    const view = this.getAttribute('data-view');
+                    showView(view);
+                });
+            });
+            
+            // Form submission
+            document.getElementById('company-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                saveCompany();
+            });
+            
+            // Search and filters
+            document.getElementById('search-input').addEventListener('input', filterCompanies);
+            document.getElementById('filter-status').addEventListener('change', filterCompanies);
+            document.getElementById('filter-focus').addEventListener('change', filterCompanies);
+        }
+        
+        // Show view
+        function showView(view) {
+            // Hide all views
+            document.querySelectorAll('.view').forEach(v => v.style.display = 'none');
+            
+            // Show selected view
+            document.getElementById('view-' + view).style.display = 'block';
+            
+            // Update navigation
+            document.querySelectorAll('.nav__item').forEach(item => {
+                const isActive = item.getAttribute('data-view') === view;
+                if (isActive) {
+                    item.classList.remove('hover:bg-slate-700', 'text-slate-300');
+                    item.classList.add('bg-primary', 'text-white');
+                } else {
+                    item.classList.remove('bg-primary', 'text-white');
+                    item.classList.add('hover:bg-slate-700', 'text-slate-300');
+                }
+            });
+            
+            currentView = view;
+            
+            // Refresh data if needed
+            if (view === 'dashboard') {
+                renderDashboard();
+            } else if (view === 'companies') {
+                renderCompaniesTable();
+            }
+            
+            // Reload config if needed
+            if (view === 'dashboard' && !config) {
+                apiLoadConfig().then(cfg => {
+                    config = cfg;
+                    renderSidebarInfo();
+                    renderDashboardInfoCards();
+                }).catch(console.error);
+            }
+        }
+        
+        // Render sidebar info
+        function renderSidebarInfo() {
+            const contentEl = document.getElementById('sidebar-info-content');
+            if (!config || !config.internship) {
+                contentEl.textContent = 'Keine Konfiguration geladen';
+                return;
+            }
+            
+            const period = config.internship.period;
+            const examPrep = config.internship.examPreparation || [];
+            
+            let html = `${period.start} - ${period.end}`;
+            if (examPrep.length > 0) {
+                html += '<br><strong>Prüfungsvorbereitung:</strong><br>';
+                examPrep.forEach(prep => {
+                    html += `${prep.start} - ${prep.end}<br>`;
+                });
+            }
+            contentEl.innerHTML = html;
+        }
+        
+        // Render dashboard info cards
+        function renderDashboardInfoCards() {
+            const container = document.getElementById('dashboard-info-cards');
+            if (!config || !config.dashboard) {
+                container.innerHTML = '<div class="text-slate-400">Keine Konfiguration geladen</div>';
+                return;
+            }
+            
+            const dashboard = config.dashboard;
+            let html = '';
+            
+            // Important Dates Card
+            if (dashboard.importantDates) {
+                const dates = dashboard.importantDates;
+                html += `
+                    <div class="bg-blue-900/30 border border-blue-800/50 rounded-xl p-5">
+                        <div class="text-lg font-semibold text-slate-100 mb-3 flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3M5 11h14M5 19h14M5 7h14M5 15h14"/></svg>
+                            ${dates.title || 'Wichtige Termine'}
+                        </div>
+                        <div class="text-sm text-slate-300 leading-relaxed">
+                            <ul class="list-disc list-inside space-y-1">
+                `;
+                if (dates.items && Array.isArray(dates.items)) {
+                    dates.items.forEach(item => {
+                        html += `<li><strong>${item.label || ''}:</strong> ${item.value || ''}</li>`;
+                    });
+                }
+                html += `
+                            </ul>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // Focus Areas Card
+            if (dashboard.focusAreas) {
+                const focus = dashboard.focusAreas;
+                html += `
+                    <div class="bg-amber-900/30 border border-amber-800/50 rounded-xl p-5">
+                        <div class="text-lg font-semibold text-slate-100 mb-3 flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v8m-4-4h8M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            ${focus.title || 'Schwerpunkte'}
+                        </div>
+                        <div class="text-sm text-slate-300 leading-relaxed">
+                            <ul class="list-disc list-inside space-y-1">
+                `;
+                if (focus.items && Array.isArray(focus.items)) {
+                    focus.items.forEach(item => {
+                        html += `<li>${item}</li>`;
+                    });
+                }
+                html += `
+                            </ul>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // Important Info Card
+            if (dashboard.importantInfo) {
+                const info = dashboard.importantInfo;
+                html += `
+                    <div class="bg-green-900/30 border border-green-800/50 rounded-xl p-5">
+                        <div class="text-lg font-semibold text-slate-100 mb-3 flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 7h18M6 7V5a2 2 0 012-2h8a2 2 0 012 2v2M6 7v10a2 2 0 002 2h8a2 2 0 002-2V7"/></svg>
+                            ${info.title || 'Wichtige Info'}
+                        </div>
+                        <div class="text-sm text-slate-300 leading-relaxed">
+                            ${info.content || ''}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            container.innerHTML = html;
+        }
+        
+        // Render dashboard
+        function renderDashboard() {
+            const stats = {
+                total: companies.length,
+                draft: companies.filter(c => c.status === 'Entwurf').length,
+                sent: companies.filter(c => c.status === 'Versendet').length,
+                interview: companies.filter(c => c.status === 'Vorstellungsgespräch geplant').length,
+                accepted: companies.filter(c => c.status === 'Angenommen').length
+            };
+            
+            document.getElementById('stat-total').textContent = stats.total;
+            document.getElementById('stat-draft').textContent = stats.draft;
+            document.getElementById('stat-sent').textContent = stats.sent;
+            document.getElementById('stat-interview').textContent = stats.interview;
+            document.getElementById('stat-accepted').textContent = stats.accepted;
+            
+            renderDashboardInfoCards();
+        }
+        
+        // Render companies table
+        function renderCompaniesTable() {
+            const tbody = document.getElementById('companies-table-body');
+            const emptyState = document.getElementById('empty-companies');
+            
+            if (companies.length === 0) {
+                tbody.innerHTML = '';
+                emptyState.style.display = 'block';
+                return;
+            }
+            
+            emptyState.style.display = 'none';
+            
+            let html = '';
+            const filteredCompanies = getFilteredCompanies();
+            
+            filteredCompanies.forEach(company => {
+                const statusBadge = getStatusBadge(company.status);
+                html += `
+                    <tr class="hover:bg-slate-700/50 transition-colors">
+                        <td class="px-4 py-3"><strong class="text-slate-100">${company.name}</strong></td>
+                        <td class="px-4 py-3 text-slate-300">${company.focus}</td>
+                        <td class="px-4 py-3 text-slate-300">${company.contact || '-'}<br><small class="text-slate-400">${company.email || ''}</small></td>
+                        <td class="px-4 py-3">${statusBadge}</td>
+                        <td class="px-4 py-3 text-slate-300">${formatDate(company.applicationDate)}</td>
+                        <td class="px-4 py-3">
+                            <div class="flex gap-2">
+                                <button class="p-1.5 text-slate-400 hover:text-slate-200 hover:bg-slate-700 rounded transition-colors" onclick="viewCompanyDetail(${company.id})" title="Details anzeigen" aria-label="Details">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.25 12s3.75-6.75 9.75-6.75S21.75 12 21.75 12 18 18.75 12 18.75 2.25 12 2.25 12z"/><circle cx="12" cy="12" r="3.5" stroke-width="1.5" stroke="currentColor" fill="none"/></svg>
+                                </button>
+                                <button class="p-1.5 text-slate-400 hover:text-slate-200 hover:bg-slate-700 rounded transition-colors" onclick="editCompany(${company.id})" title="Bearbeiten" aria-label="Bearbeiten">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16.862 4.487l1.651-1.651a2.121 2.121 0 013 3l-1.651 1.651M16.862 4.487L6.75 14.6V18h3.4l10.112-10.113"/></svg>
+                                </button>
+                                <button class="p-1.5 text-slate-400 hover:text-red-400 hover:bg-red-900/30 rounded transition-colors" onclick="deleteCompany(${company.id})" title="Löschen" aria-label="Löschen">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 7h12M9 7V5a2 2 0 012-2h2a2 2 0 012 2v2m-9 0l1 12a2 2 0 002 2h6a2 2 0 002-2l1-12"/></svg>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            tbody.innerHTML = html;
+        }
+        
+        // Get status badge HTML
+        function getStatusBadge(status) {
+            let classes = 'inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border';
+            switch(status) {
+                case 'Angenommen':
+                    return `<span class="${classes} bg-green-900/40 text-green-300 border-green-700/50">${status}</span>`;
+                case 'Abgelehnt':
+                    return `<span class="${classes} bg-red-900/40 text-red-300 border-red-700/50">${status}</span>`;
+                case 'Versendet':
+                case 'Vorstellungsgespräch geplant':
+                    return `<span class="${classes} bg-amber-900/40 text-amber-300 border-amber-700/50">${status}</span>`;
+                default:
+                    return `<span class="${classes} bg-slate-700/50 text-slate-300 border-slate-600">${status}</span>`;
+            }
+        }
+        
+        // Get status class (for detail view)
+        function getStatusClass(status) {
+            switch(status) {
+                case 'Angenommen':
+                    return 'bg-green-900/40 text-green-300 border-green-700/50';
+                case 'Abgelehnt':
+                    return 'bg-red-900/40 text-red-300 border-red-700/50';
+                case 'Versendet':
+                case 'Vorstellungsgespräch geplant':
+                    return 'bg-amber-900/40 text-amber-300 border-amber-700/50';
+                default:
+                    return 'bg-slate-700/50 text-slate-300 border-slate-600';
+            }
+        }
+        
+        // Format date
+        function formatDate(dateString) {
+            if (!dateString) return '-';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('de-DE');
+        }
+        
+        // Filter companies
+        function getFilteredCompanies() {
+            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            const statusFilter = document.getElementById('filter-status').value;
+            const focusFilter = document.getElementById('filter-focus').value;
+            
+            let filtered = companies;
+            
+            if (searchTerm) {
+                filtered = filtered.filter(c => 
+                    c.name.toLowerCase().includes(searchTerm) ||
+                    (c.contact && c.contact.toLowerCase().includes(searchTerm))
+                );
+            }
+            
+            if (statusFilter) {
+                filtered = filtered.filter(c => c.status === statusFilter);
+            }
+            
+            if (focusFilter) {
+                filtered = filtered.filter(c => c.focus === focusFilter);
+            }
+            
+            // Apply sorting
+            filtered.sort((a, b) => {
+                let aVal = a[sortColumn] || '';
+                let bVal = b[sortColumn] || '';
+                
+                if (sortColumn === 'applicationDate' || sortColumn === 'followupDate') {
+                    aVal = new Date(aVal || '1900-01-01');
+                    bVal = new Date(bVal || '1900-01-01');
+                }
+                
+                if (aVal < bVal) return sortDirection === 'asc' ? -1 : 1;
+                if (aVal > bVal) return sortDirection === 'asc' ? 1 : -1;
+                return 0;
+            });
+            
+            return filtered;
+        }
+        
+        function filterCompanies() {
+            renderCompaniesTable();
+        }
+        
+        // Sort table
+        function sortTable(column) {
+            if (sortColumn === column) {
+                sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+            } else {
+                sortColumn = column;
+                sortDirection = 'asc';
+            }
+            renderCompaniesTable();
+        }
+        
+        // Save company
+        async function saveCompany() {
+            const editId = document.getElementById('edit-id').value;
+            
+            const company = {
+                id: editId ? parseInt(editId) : Date.now(),
+                name: document.getElementById('company-name').value,
+                focus: document.getElementById('company-focus').value,
+                city: document.getElementById('company-city').value,
+                industry: document.getElementById('company-industry').value,
+                contact: document.getElementById('company-contact').value,
+                contactTitle: document.getElementById('company-contact-title').value,
+                email: document.getElementById('company-email').value,
+                phone: document.getElementById('company-phone').value,
+                website: document.getElementById('company-website').value,
+                status: document.getElementById('company-status').value,
+                applicationDate: document.getElementById('company-application-date').value,
+                followupDate: document.getElementById('company-followup-date').value,
+                specialFeatures: document.getElementById('company-special-features').value,
+                notes: document.getElementById('company-notes').value
+            };
+            
+            try {
+                if (editId) {
+                    const updated = await apiUpdateCompany(parseInt(editId), company);
+                    const index = companies.findIndex(c => c.id === parseInt(editId));
+                    if (index >= 0) companies[index] = updated;
+                } else {
+                    const created = await apiCreateCompany(company);
+                    companies.push(created);
+                }
+            } catch (e) {
+                console.error(e);
+                alert('Speichern fehlgeschlagen. Läuft der Server?');
+                return;
+            }
+            
+            // Reset form and show companies view
+            document.getElementById('company-form').reset();
+            document.getElementById('edit-id').value = '';
+            document.getElementById('form-title').textContent = 'Unternehmen hinzufügen';
+            showView('companies');
+            renderDashboard();
+            renderCompaniesTable();
+        }
+        
+        // Edit company
+        function editCompany(id) {
+            const company = companies.find(c => c.id === id);
+            if (!company) return;
+            
+            document.getElementById('edit-id').value = company.id;
+            document.getElementById('company-name').value = company.name || '';
+            document.getElementById('company-focus').value = company.focus || '';
+            document.getElementById('company-city').value = company.city || '';
+            document.getElementById('company-industry').value = company.industry || '';
+            document.getElementById('company-contact').value = company.contact || '';
+            document.getElementById('company-contact-title').value = company.contactTitle || '';
+            document.getElementById('company-email').value = company.email || '';
+            document.getElementById('company-phone').value = company.phone || '';
+            document.getElementById('company-website').value = company.website || '';
+            document.getElementById('company-status').value = company.status || '';
+            document.getElementById('company-application-date').value = company.applicationDate || '';
+            document.getElementById('company-followup-date').value = company.followupDate || '';
+            document.getElementById('company-special-features').value = company.specialFeatures || '';
+            document.getElementById('company-notes').value = company.notes || '';
+            
+            document.getElementById('form-title').textContent = 'Unternehmen bearbeiten';
+            showView('add-company');
+        }
+        
+        // Delete company
+        async function deleteCompany(id) {
+            if (confirm('Möchten Sie dieses Unternehmen wirklich löschen?')) {
+                try {
+                    await apiDeleteCompany(id);
+                    companies = companies.filter(c => c.id !== id);
+                } catch (e) {
+                    console.error(e);
+                    alert('Löschen fehlgeschlagen. Läuft der Server?');
+                    return;
+                }
+                renderCompaniesTable();
+                renderDashboard();
+            }
+        }
+        
+        // Cancel form
+        function cancelForm() {
+            document.getElementById('company-form').reset();
+            document.getElementById('edit-id').value = '';
+            document.getElementById('form-title').textContent = 'Unternehmen hinzufügen';
+            showView('companies');
+        }
+        
+        // View company detail
+        function viewCompanyDetail(id) {
+            const company = companies.find(c => c.id === id);
+            if (!company) return;
+            
+            currentDetailId = id;
+            
+            document.getElementById('detail-company-name').textContent = company.name;
+            
+            const statusEl = document.getElementById('detail-company-status');
+            const statusClasses = getStatusClass(company.status);
+            statusEl.innerHTML = `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border ${statusClasses}">${company.status}</span>`;
+            
+            document.getElementById('detail-focus').textContent = company.focus || '-';
+            document.getElementById('detail-city').textContent = company.city || '-';
+            document.getElementById('detail-industry').textContent = company.industry || '-';
+            document.getElementById('detail-contact').textContent = company.contact || '-';
+            document.getElementById('detail-contact-title').textContent = company.contactTitle || '-';
+            document.getElementById('detail-email').textContent = company.email || '-';
+            document.getElementById('detail-phone').textContent = company.phone || '-';
+            
+            const websiteEl = document.getElementById('detail-website');
+            if (company.website) {
+                websiteEl.innerHTML = `<a href="${company.website}" target="_blank" class="text-primary hover:text-primary-400 hover:underline">${company.website}</a>`;
+            } else {
+                websiteEl.textContent = '-';
+            }
+            
+            document.getElementById('detail-application-date').textContent = formatDate(company.applicationDate);
+            document.getElementById('detail-followup-date').textContent = formatDate(company.followupDate);
+            document.getElementById('detail-special-features').textContent = company.specialFeatures || 'Keine Besonderheiten vorhanden.';
+            document.getElementById('detail-notes').textContent = company.notes || 'Keine Notizen vorhanden.';
+            
+            showView('company-detail');
+        }
+        
+        // Edit from detail view
+        function editCompanyFromDetail() {
+            if (currentDetailId) {
+                editCompany(currentDetailId);
+            }
+        }
+        
+        // Delete from detail view
+        function deleteCompanyFromDetail() {
+            if (currentDetailId) {
+                deleteCompany(currentDetailId);
+                showView('companies');
+            }
+        }
+        
+        // Render projects
+        function renderProjects() {
+            const grid = document.getElementById('projects-grid');
+            let html = '';
+            
+            projectIdeas.forEach(project => {
+                html += `
+                    <div class="bg-slate-800 border border-slate-700 rounded-xl p-5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all">
+                        <div class="text-lg font-semibold text-slate-100 mb-2">${project.title}</div>
+                        <div class="text-slate-300 text-sm mb-4 leading-relaxed">${project.description}</div>
+                        <div class="flex flex-col gap-2 text-sm">
+                            <div class="flex justify-between">
+                                <span class="text-slate-400 font-medium">Relevanz:</span>
+                                <span class="text-slate-200">${project.relevance}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-slate-400 font-medium">Komplexität:</span>
+                                <span class="text-slate-200">${project.complexity}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            grid.innerHTML = html;
+        }
+        
+        // Export to CSV
+        function exportToCSV() {
+            if (companies.length === 0) {
+                alert('Keine Unternehmen zum Exportieren vorhanden.');
+                return;
+            }
+            
+            // Spalten gemäß Betriebsliste_Praktikum_2026.csv
+            const headers = [
+                'Lfd. Nr.',
+                'Unternehmensname',
+                'Fokusbereich',
+                'Stadt',
+                'Branche',
+                'Ansprechpartner',
+                'Titel/Position',
+                'Email',
+                'Telefon',
+                'Website',
+                'Bewerbungsstatus',
+                'Bewerbungsdatum',
+                'Folgekontakt',
+                'Besonderheiten',
+                'Notizen'
+            ];
+            
+            let csv = headers.join(',') + '\n';
+            
+            companies.forEach((company, index) => {
+                const row = [
+                    index + 1, // Lfd. Nr.
+                    company.name || '',
+                    company.focus || '',
+                    company.city || '',
+                    company.industry || '',
+                    company.contact || '',
+                    company.contactTitle || '',
+                    company.email || '',
+                    company.phone || '',
+                    company.website || '',
+                    company.status || '',
+                    company.applicationDate || '',
+                    company.followupDate || '',
+                    (company.specialFeatures || '').replace(/\n/g, ' '),
+                    (company.notes || '').replace(/\n/g, ' ')
+                ];
+                csv += row.map(field => `"${String(field).replace(/"/g, '""')}"`).join(',') + '\n';
+            });
+            
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'Betriebsliste_Praktikum_2026.csv';
+            link.click();
+        }
+        
+        // Initialize on load
+        init();
+    </script>
+</body>
+</html>

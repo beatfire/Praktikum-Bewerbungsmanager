@@ -1,0 +1,53 @@
+{
+  "internship": {
+    "period": {
+      "start": "27.04.2026",
+      "end": "01.12.2026"
+    },
+    "examPreparation": [
+      {
+        "name": "Prüfungsvorbereitung 1",
+        "start": "17.08.2026",
+        "end": "28.08.2026"
+      },
+      {
+        "name": "Prüfungsvorbereitung 2",
+        "start": "12.10.2026",
+        "end": "23.10.2026"
+      }
+    ]
+  },
+  "dashboard": {
+    "importantDates": {
+      "title": "Wichtige Termine",
+      "items": [
+        {
+          "label": "Praktikum",
+          "value": "27.04.2026 - 01.12.2026"
+        },
+        {
+          "label": "Prüfungsvorbereitung 1",
+          "value": "17.08. - 28.08.2026"
+        },
+        {
+          "label": "Prüfungsvorbereitung 2",
+          "value": "12.10. - 23.10.2026"
+        }
+      ]
+    },
+    "focusAreas": {
+      "title": "Schwerpunkte",
+      "items": [
+        "Netzwerktechnik",
+        "Cybersecurity",
+        "IT-Infrastruktur",
+        "Cloud Computing"
+      ]
+    },
+    "importantInfo": {
+      "title": "Wichtige Info",
+      "content": "Das Praktikum ist für den Betrieb kostenfrei, da es im Rahmen einer Umschulung bei CBW Hamburg durch die Arbeitsagentur finanziert wird."
+    }
+  }
+}
+

@@ -182,6 +182,15 @@ def api_get_config():
 
 if __name__ == "__main__":
     # Run with: python server.py
-    app.run(host="127.0.0.1", port=5000, debug=True)
+    # In Docker muss auf 0.0.0.0 gebunden werden, damit der Container von außen erreichbar ist
+    import os
+    # Prüfe ob wir in Docker laufen (FLASK_HOST gesetzt) oder lokal
+    host = os.getenv("FLASK_HOST", "127.0.0.1")
+    # Wenn FLASK_ENV=production, dann debug=False, sonst debug=True
+    flask_env = os.getenv("FLASK_ENV", "development")
+    debug = flask_env == "development"
+    
+    print(f"Starting Flask server on {host}:5000 (debug={debug})")
+    app.run(host=host, port=5000, debug=debug)
 
 

@@ -19,7 +19,60 @@ Ein modernes Web-Interface zur Verwaltung von Praktikumsbewerbungen für Fachinf
 
 ## Installation
 
-### 1. Python-Abhängigkeiten installieren
+### Option 1: Docker (Empfohlen)
+
+#### Voraussetzungen
+- Docker installiert ([Docker Desktop](https://www.docker.com/products/docker-desktop))
+- Docker Compose (meist in Docker Desktop enthalten)
+
+#### Installation mit Docker
+
+1. **Docker Image bauen und starten:**
+   ```bash
+   docker-compose up -d
+   ```
+
+2. **Anwendung öffnen:**
+   Öffnen Sie in Ihrem Webbrowser:
+   ```
+   http://localhost:5000
+   ```
+
+3. **Container stoppen:**
+   ```bash
+   docker-compose down
+   ```
+
+4. **Logs anzeigen:**
+   ```bash
+   docker-compose logs -f
+   ```
+
+#### Docker-Befehle
+
+**Image bauen:**
+```bash
+docker build -t praktikum-manager .
+```
+
+**Container starten:**
+```bash
+docker run -d -p 5000:5000 \
+  -v $(pwd)/companies.json:/app/companies.json \
+  -v $(pwd)/config.json:/app/config.json \
+  --name praktikum-manager \
+  praktikum-manager
+```
+
+**Container stoppen:**
+```bash
+docker stop praktikum-manager
+docker rm praktikum-manager
+```
+
+### Option 2: Lokale Installation
+
+#### 1. Python-Abhängigkeiten installieren
 
 Öffnen Sie ein Terminal im Projektverzeichnis und installieren Sie Flask:
 
@@ -27,7 +80,12 @@ Ein modernes Web-Interface zur Verwaltung von Praktikumsbewerbungen für Fachinf
 pip install flask
 ```
 
-### 2. Server starten
+Oder mit requirements.txt:
+```bash
+pip install -r requirements.txt
+```
+
+#### 2. Server starten
 
 Starten Sie den Backend-Server:
 
@@ -37,7 +95,7 @@ python server.py
 
 Der Server läuft standardmäßig auf `http://127.0.0.1:5000`
 
-### 3. Anwendung öffnen
+#### 3. Anwendung öffnen
 
 Öffnen Sie in Ihrem Webbrowser:
 ```
@@ -261,6 +319,10 @@ Praktikum/
 ├── server.py               # Backend-Server (Flask)
 ├── config.json             # Konfigurationsdatei
 ├── companies.json          # Datenbank (Unternehmen)
+├── requirements.txt        # Python-Abhängigkeiten
+├── Dockerfile              # Docker Image Definition
+├── docker-compose.yml      # Docker Compose Konfiguration
+├── .dockerignore          # Docker Ignore-Datei
 ├── README.md              # Diese Anleitung
 └── ...
 ```
@@ -292,6 +354,29 @@ Praktikum/
 - Überprüfen Sie die Browser-Konsole auf Fehler
 - Testen Sie in einem anderen Browser
 
+### Docker-Probleme
+
+**ERR_EMPTY_RESPONSE im Browser:**
+- Der Container muss neu gebaut werden: `docker-compose down && docker-compose build --no-cache && docker-compose up -d`
+- Überprüfen Sie, ob der Container läuft: `docker ps`
+- Überprüfen Sie die Logs: `docker-compose logs -f`
+- Überprüfen Sie, ob der Server auf 0.0.0.0 bindet (siehe server.py)
+
+**Container startet nicht:**
+- Überprüfen Sie, ob Docker läuft: `docker ps`
+- Überprüfen Sie die Logs: `docker-compose logs`
+- Überprüfen Sie, ob Port 5000 frei ist: `netstat -an | grep 5000` (Linux/Mac) oder `netstat -an | findstr 5000` (Windows)
+
+**Daten werden nicht gespeichert:**
+- Überprüfen Sie, ob die Volumes korrekt gemountet sind
+- Überprüfen Sie die Dateiberechtigungen: `ls -la companies.json config.json` (Linux/Mac) oder `dir companies.json config.json` (Windows)
+- Überprüfen Sie die Container-Logs: `docker-compose logs praktikum-manager`
+
+**Container kann nicht gebaut werden:**
+- Überprüfen Sie die Docker-Version: `docker --version`
+- Überprüfen Sie die Dockerfile-Syntax
+- Versuchen Sie einen Clean Build: `docker-compose build --no-cache`
+
 ## Technische Details
 
 ### Backend
@@ -319,13 +404,52 @@ Praktikum/
 3. Änderungen an `index.html` werden nach Neuladen sichtbar
 4. Änderungen an `server.py` erfordern einen Server-Neustart
 
+### Docker-Entwicklung
+
+1. **Container im Entwicklungsmodus starten:**
+   ```bash
+   docker-compose up
+   ```
+
+2. **Container neu bauen nach Änderungen:**
+   ```bash
+   docker-compose build
+   docker-compose up -d
+   ```
+
+3. **In den Container einsteigen:**
+   ```bash
+   docker exec -it praktikum-manager bash
+   ```
+
 ### Produktions-Deployment
+
+#### Mit Docker (Empfohlen)
+
+1. **Docker Image bauen:**
+   ```bash
+   docker build -t praktikum-manager:latest .
+   ```
+
+2. **Container mit Volumes starten (für Datenpersistenz):**
+   ```bash
+   docker run -d \
+     -p 5000:5000 \
+     -v /pfad/zu/companies.json:/app/companies.json \
+     -v /pfad/zu/config.json:/app/config.json \
+     --restart unless-stopped \
+     --name praktikum-manager \
+     praktikum-manager:latest
+   ```
+
+#### Ohne Docker
 
 Für den Produktionseinsatz sollten Sie:
 - Einen Production WSGI-Server verwenden (z.B. Gunicorn)
 - Environment-Variablen für Konfiguration nutzen
 - HTTPS aktivieren
 - CORS-Einstellungen anpassen, falls nötig
+- Reverse Proxy (Nginx) verwenden
 
 ## Support
 

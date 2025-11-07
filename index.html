@@ -381,52 +381,6 @@
         let sortColumn = 'name';
         let sortDirection = 'asc';
         
-        // Project ideas data
-        const projectIdeas = [
-            {
-                title: "Firewall-Migration",
-                description: "Migration einer bestehenden Firewall zu einem neuen System",
-                relevance: "Cybersecurity, Netzwerktechnik",
-                complexity: "Mittel bis Hoch"
-            },
-            {
-                title: "Netzwerksegmentierung",
-                description: "Implementierung von VLANs und Netzwerksegmentierung für erhöhte Sicherheit",
-                relevance: "Netzwerktechnik, Cybersecurity",
-                complexity: "Mittel"
-            },
-            {
-                title: "Patch Management Implementierung",
-                description: "Aufbau eines zentralisierten Patchmanagementsystems zur Software-Verteilung",
-                relevance: "Systemintegration, Cybersecurity",
-                complexity: "Mittel"
-            },
-            {
-                title: "Zero-Trust-Umgebung",
-                description: "Konzeption und Umsetzung einer Zero-Trust-Sicherheitsarchitektur",
-                relevance: "Cybersecurity, IT-Infrastruktur",
-                complexity: "Hoch"
-            },
-            {
-                title: "Linux-Server Einbindung",
-                description: "Integration von Linux-Servern in bestehende Windows-Netzwerk-Umgebung",
-                relevance: "Netzwerktechnik, Systemintegration",
-                complexity: "Mittel"
-            },
-            {
-                title: "VPN-Konfiguration",
-                description: "Einrichtung und Konfiguration von VPN für sichere Remote-Verbindungen",
-                relevance: "Netzwerktechnik, Cybersecurity",
-                complexity: "Mittel bis Hoch"
-            },
-            {
-                title: "Cloud-Migration",
-                description: "Planung und Durchführung einer Migration zu Cloud-Services (Azure/AWS)",
-                relevance: "Cloud Computing, Systemintegration",
-                complexity: "Hoch"
-            }
-        ];
-        
         // Backend API helpers
         async function apiLoadCompanies() {
             const res = await fetch('/api/companies');
@@ -536,14 +490,20 @@
                 renderDashboard();
             } else if (view === 'companies') {
                 renderCompaniesTable();
+            } else if (view === 'projects') {
+                renderProjects();
             }
             
             // Reload config if needed
-            if (view === 'dashboard' && !config) {
+            if ((view === 'dashboard' || view === 'projects') && !config) {
                 apiLoadConfig().then(cfg => {
                     config = cfg;
                     renderSidebarInfo();
-                    renderDashboardInfoCards();
+                    if (view === 'dashboard') {
+                        renderDashboardInfoCards();
+                    } else if (view === 'projects') {
+                        renderProjects();
+                    }
                 }).catch(console.error);
             }
         }
@@ -956,24 +916,32 @@
             const grid = document.getElementById('projects-grid');
             let html = '';
             
-            projectIdeas.forEach(project => {
-                html += `
-                    <div class="bg-slate-800 border border-slate-700 rounded-xl p-5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all">
-                        <div class="text-lg font-semibold text-slate-100 mb-2">${project.title}</div>
-                        <div class="text-slate-300 text-sm mb-4 leading-relaxed">${project.description}</div>
-                        <div class="flex flex-col gap-2 text-sm">
-                            <div class="flex justify-between">
-                                <span class="text-slate-400 font-medium">Relevanz:</span>
-                                <span class="text-slate-200">${project.relevance}</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-slate-400 font-medium">Komplexität:</span>
-                                <span class="text-slate-200">${project.complexity}</span>
+            const projects = (config && config.projects && Array.isArray(config.projects)) 
+                ? config.projects 
+                : [];
+            
+            if (projects.length === 0) {
+                html = '<div class="text-slate-400 col-span-full text-center py-8">Keine Projekte konfiguriert</div>';
+            } else {
+                projects.forEach(project => {
+                    html += `
+                        <div class="bg-slate-800 border border-slate-700 rounded-xl p-5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all">
+                            <div class="text-lg font-semibold text-slate-100 mb-2">${project.title || 'Unbenanntes Projekt'}</div>
+                            <div class="text-slate-300 text-sm mb-4 leading-relaxed">${project.description || ''}</div>
+                            <div class="flex flex-col gap-2 text-sm">
+                                <div class="flex justify-between">
+                                    <span class="text-slate-400 font-medium">Relevanz:</span>
+                                    <span class="text-slate-200">${project.relevance || '-'}</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-slate-400 font-medium">Komplexität:</span>
+                                    <span class="text-slate-200">${project.complexity || '-'}</span>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                `;
-            });
+                    `;
+                });
+            }
             
             grid.innerHTML = html;
         }

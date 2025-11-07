@@ -206,7 +206,44 @@ Die Datei `config.json` ermöglicht es, wichtige Informationen individuell anzup
       "title": "Titel der Karte",
       "content": "Ihr Text hier..."
     }
-  }
+  },
+  "projects": [
+    {
+      "title": "Projekt-Titel",
+      "description": "Beschreibung des Projekts",
+      "relevance": "Relevanz-Bereiche (z.B. Cybersecurity, Netzwerktechnik)",
+      "complexity": "Komplexität (z.B. Niedrig, Mittel, Hoch)"
+    }
+  ]
+}
+```
+
+#### Projekte konfigurieren
+
+Die Projekt-Ideen werden im `projects` Array konfiguriert. Jedes Projekt benötigt:
+
+- **title**: Titel des Projekts
+- **description**: Beschreibung des Projekts
+- **relevance**: Relevante Bereiche (z.B. "Cybersecurity, Netzwerktechnik")
+- **complexity**: Komplexität (z.B. "Niedrig", "Mittel", "Hoch", "Mittel bis Hoch")
+
+**Beispiel:**
+```json
+{
+  "projects": [
+    {
+      "title": "Firewall-Migration",
+      "description": "Migration einer bestehenden Firewall zu einem neuen System",
+      "relevance": "Cybersecurity, Netzwerktechnik",
+      "complexity": "Mittel bis Hoch"
+    },
+    {
+      "title": "Netzwerksegmentierung",
+      "description": "Implementierung von VLANs und Netzwerksegmentierung",
+      "relevance": "Netzwerktechnik, Cybersecurity",
+      "complexity": "Mittel"
+    }
+  ]
 }
 ```
 

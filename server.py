@@ -97,7 +97,51 @@ def get_default_config() -> dict:
                 "title": "Wichtige Info",
                 "content": "Das Praktikum ist für den Betrieb kostenfrei, da es im Rahmen einer Umschulung bei CBW Hamburg durch die Arbeitsagentur finanziert wird."
             }
-        }
+        },
+        "projects": [
+            {
+                "title": "Firewall-Migration",
+                "description": "Migration einer bestehenden Firewall zu einem neuen System",
+                "relevance": "Cybersecurity, Netzwerktechnik",
+                "complexity": "Mittel bis Hoch"
+            },
+            {
+                "title": "Netzwerksegmentierung",
+                "description": "Implementierung von VLANs und Netzwerksegmentierung für erhöhte Sicherheit",
+                "relevance": "Netzwerktechnik, Cybersecurity",
+                "complexity": "Mittel"
+            },
+            {
+                "title": "Patch Management Implementierung",
+                "description": "Aufbau eines zentralisierten Patchmanagementsystems zur Software-Verteilung",
+                "relevance": "Systemintegration, Cybersecurity",
+                "complexity": "Mittel"
+            },
+            {
+                "title": "Zero-Trust-Umgebung",
+                "description": "Konzeption und Umsetzung einer Zero-Trust-Sicherheitsarchitektur",
+                "relevance": "Cybersecurity, IT-Infrastruktur",
+                "complexity": "Hoch"
+            },
+            {
+                "title": "Linux-Server Einbindung",
+                "description": "Integration von Linux-Servern in bestehende Windows-Netzwerk-Umgebung",
+                "relevance": "Netzwerktechnik, Systemintegration",
+                "complexity": "Mittel"
+            },
+            {
+                "title": "VPN-Konfiguration",
+                "description": "Einrichtung und Konfiguration von VPN für sichere Remote-Verbindungen",
+                "relevance": "Netzwerktechnik, Cybersecurity",
+                "complexity": "Mittel bis Hoch"
+            },
+            {
+                "title": "Cloud-Migration",
+                "description": "Planung und Durchführung einer Migration zu Cloud-Services (Azure/AWS)",
+                "relevance": "Cloud Computing, Systemintegration",
+                "complexity": "Hoch"
+            }
+        ]
     }
 
 

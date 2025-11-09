@@ -6,8 +6,10 @@ Ein modernes Web-Interface zur Verwaltung von Praktikumsbewerbungen für Fachinf
 
 - **Unternehmensverwaltung**: Vollständige CRUD-Funktionen für Unternehmen
 - **Bewerbungsstatus-Tracking**: Übersicht über Entwürfe, Versendete, Vorstellungsgespräche und Annahmen
+- **Anschreiben-Erstellung**: Personalisierte Anschreiben mit automatischer Platzhalter-Ersetzung
 - **CSV-Export**: Export der Daten im Format der Betriebsliste
 - **Konfigurierbare Dashboard-Informationen**: Anpassbare Termine, Schwerpunkte und wichtige Informationen
+- **Kontaktdaten-Konfiguration**: Zentrale Verwaltung Ihrer Kontaktdaten für Anschreiben
 - **Modernes Dark Mode Design**: Professionelles UI mit Tailwind CSS
 - **Projekt-Ideen**: Übersicht möglicher Projekte für die Abschlussprüfung
 
@@ -214,7 +216,15 @@ Die Datei `config.json` ermöglicht es, wichtige Informationen individuell anzup
       "relevance": "Relevanz-Bereiche (z.B. Cybersecurity, Netzwerktechnik)",
       "complexity": "Komplexität (z.B. Niedrig, Mittel, Hoch)"
     }
-  ]
+  ],
+  "contact": {
+    "name": "Ihr Name",
+    "address": "Ihre Adresse",
+    "city": "Ihre Stadt",
+    "postalCode": "PLZ",
+    "email": "Ihre E-Mail",
+    "phone": "Ihr Telefon"
+  }
 }
 ```
 
@@ -246,6 +256,34 @@ Die Projekt-Ideen werden im `projects` Array konfiguriert. Jedes Projekt benöti
   ]
 }
 ```
+
+#### Kontaktdaten konfigurieren
+
+Ihre persönlichen Kontaktdaten werden im `contact` Objekt konfiguriert. Diese werden automatisch in den Anschreiben-Vorlagen verwendet.
+
+**Beispiel:**
+```json
+{
+  "contact": {
+    "name": "Max Mustermann",
+    "address": "Musterstraße 123",
+    "city": "Hamburg",
+    "postalCode": "20095",
+    "email": "max.mustermann@email.de",
+    "phone": "+49 40 12345678"
+  }
+}
+```
+
+**Felder:**
+- **name**: Ihr vollständiger Name
+- **address**: Ihre Straße und Hausnummer
+- **city**: Ihre Stadt
+- **postalCode**: Ihre Postleitzahl
+- **email**: Ihre E-Mail-Adresse
+- **phone**: Ihre Telefonnummer
+
+**Wichtig:** Diese Kontaktdaten werden in allen Anschreiben-Vorlagen verwendet, die Sie erstellen. Stellen Sie sicher, dass alle Felder korrekt ausgefüllt sind.
 
 ## Verwendung
 
@@ -284,6 +322,74 @@ Die Projekt-Ideen werden im `projects` Array konfiguriert. Jedes Projekt benöti
 ### Sortierung
 
 Klicken Sie auf die Spaltenüberschriften in der Tabelle, um nach diesem Feld zu sortieren. Ein erneuter Klick kehrt die Sortierrichtung um.
+
+### Anschreiben erstellen
+
+Die Anwendung bietet eine integrierte Funktion zur Erstellung personalisierter Anschreiben mit automatischer Platzhalter-Ersetzung.
+
+#### Zugriff auf die Anschreiben-Funktion
+
+1. **Über die Sidebar**: Klicken Sie auf "Anschreiben erstellen" in der Navigation
+2. **Über die Firmen-Detailansicht**: Klicken Sie auf den Button "Anschreiben erstellen" in der Detailansicht eines Unternehmens
+
+#### Verwendung
+
+1. **Unternehmen auswählen**: Wählen Sie ein Unternehmen aus dem Dropdown-Menü aus (optional, aber empfohlen)
+2. **Vorlage eingeben oder laden**: 
+   - Geben Sie Ihr Anschreiben direkt in das Textfeld ein
+   - Oder verwenden Sie eine der vordefinierten Vorlagen:
+     - **Standard-Vorlage**: Klassisches formelles Anschreiben
+     - **Formelle Vorlage**: Sehr formelles Anschreiben mit Betreffzeile
+     - **Persönliche Vorlage**: Freundlicheres, persönlicheres Anschreiben
+3. **Platzhalter verwenden**: Verwenden Sie die verfügbaren Platzhalter in Ihrer Vorlage (siehe unten)
+4. **Vorschau prüfen**: Die rechte Seite zeigt eine Live-Vorschau mit ersetzten Platzhaltern
+5. **Download**: Klicken Sie auf "Download", um das fertige Anschreiben als Textdatei herunterzuladen
+
+#### Verfügbare Platzhalter
+
+**Firmendaten:**
+- `{{company.name}}` - Unternehmensname
+- `{{company.contact}}` - Ansprechpartner
+- `{{company.contactTitle}}` - Titel/Position des Ansprechpartners
+- `{{company.city}}` - Stadt
+- `{{company.focus}}` - Schwerpunkt/Fokusbereich
+- `{{company.industry}}` - Branche
+- `{{company.email}}` - E-Mail-Adresse
+- `{{company.phone}}` - Telefonnummer
+- `{{company.website}}` - Website-URL
+
+**Ihre Kontaktdaten:**
+- `{{contact.name}}` - Ihr Name
+- `{{contact.address}}` - Ihre Adresse
+- `{{contact.city}}` - Ihre Stadt
+- `{{contact.postalCode}}` - Ihre PLZ
+- `{{contact.email}}` - Ihre E-Mail
+- `{{contact.phone}}` - Ihr Telefon
+
+**Sonstiges:**
+- `{{date}}` - Aktuelles Datum (formatiert als "Tag. Monat Jahr", z.B. "15. Januar 2026")
+
+#### Beispiel-Vorlage
+
+```
+{{contact.name}}
+{{contact.address}}
+{{contact.postalCode}} {{contact.city}}
+
+{{company.name}}
+{{company.contact}}
+{{company.city}}
+
+Sehr geehrte Damen und Herren,
+
+mit großem Interesse habe ich Ihre Stellenausschreibung für {{company.focus}} bei {{company.name}} gelesen...
+
+Mit freundlichen Grüßen
+
+{{contact.name}}
+```
+
+**Hinweis:** Alle Platzhalter werden automatisch durch die entsprechenden Werte ersetzt. Wenn ein Platzhalter nicht verfügbar ist (z.B. weil kein Unternehmen ausgewählt wurde), wird er durch einen leeren String ersetzt.
 
 ## Datenstruktur
 

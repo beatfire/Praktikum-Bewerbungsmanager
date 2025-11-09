@@ -50,6 +50,10 @@
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4v16m8-8H4"/></svg>
                     Unternehmen hinzufügen
                 </div>
+                <div class="nav__item flex items-center gap-2 px-3 py-2.5 rounded-lg cursor-pointer transition-colors hover:bg-slate-700 text-slate-300 font-medium" data-view="cover-letter">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                    Anschreiben erstellen
+                </div>
             </nav>
             
             <div id="sidebar-info" class="border border-slate-700 rounded-lg p-4 bg-slate-700/50 mt-auto">
@@ -302,6 +306,10 @@
                         <div id="detail-company-status" class="inline-block mb-4"></div>
                         <div class="flex gap-3 mt-4">
                             <button class="px-6 py-2.5 bg-primary hover:bg-primary-600 text-white rounded-lg font-medium transition-colors" onclick="editCompanyFromDetail()">Bearbeiten</button>
+                            <button class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors flex items-center gap-2" onclick="createCoverLetterFromDetail()">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                                Anschreiben erstellen
+                            </button>
                             <button class="px-6 py-2.5 border border-slate-600 hover:bg-slate-700 text-slate-200 rounded-lg font-medium transition-colors" onclick="deleteCompanyFromDetail()">Löschen</button>
                         </div>
                     </div>
@@ -366,6 +374,90 @@
                     <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-sm">
                         <h3 class="text-xl font-semibold text-slate-100 mb-4">Notizen</h3>
                         <p id="detail-notes" class="text-slate-300 leading-relaxed">-</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Cover Letter View -->
+            <div id="view-cover-letter" class="view" style="display: none;">
+                <div class="max-w-5xl">
+                    <div class="mb-8">
+                        <h1 class="text-3xl font-semibold text-slate-100 mb-2">Anschreiben erstellen</h1>
+                        <p class="text-lg text-slate-400">Erstellen Sie ein personalisiertes Anschreiben mit Firmenplatzhaltern</p>
+                    </div>
+                    
+                    <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 mb-6 shadow-sm">
+                        <div class="mb-4">
+                            <label class="block mb-2 text-sm font-medium text-slate-200" for="cover-letter-company">Unternehmen auswählen</label>
+                            <select class="w-full px-4 py-2 bg-slate-700 border border-slate-600 text-slate-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" id="cover-letter-company" onchange="updateCoverLetterPreview()">
+                                <option value="">Bitte wählen...</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-4 p-4 bg-slate-900/50 rounded-lg border border-slate-600">
+                            <div class="text-sm font-medium text-slate-300 mb-2">Verfügbare Platzhalter:</div>
+                            <div class="text-xs text-slate-400 space-y-1">
+                                <div class="font-semibold text-slate-300 mt-2 mb-1">Firmendaten:</div>
+                                <div><code class="bg-slate-800 px-2 py-1 rounded">{{company.name}}</code> - Unternehmensname</div>
+                                <div><code class="bg-slate-800 px-2 py-1 rounded">{{company.contact}}</code> - Ansprechpartner</div>
+                                <div><code class="bg-slate-800 px-2 py-1 rounded">{{company.contactTitle}}</code> - Titel/Position</div>
+                                <div><code class="bg-slate-800 px-2 py-1 rounded">{{company.city}}</code> - Stadt</div>
+                                <div><code class="bg-slate-800 px-2 py-1 rounded">{{company.focus}}</code> - Schwerpunkt</div>
+                                <div><code class="bg-slate-800 px-2 py-1 rounded">{{company.industry}}</code> - Branche</div>
+                                <div><code class="bg-slate-800 px-2 py-1 rounded">{{company.email}}</code> - E-Mail</div>
+                                <div><code class="bg-slate-800 px-2 py-1 rounded">{{company.phone}}</code> - Telefon</div>
+                                <div><code class="bg-slate-800 px-2 py-1 rounded">{{company.website}}</code> - Website</div>
+                                <div class="font-semibold text-slate-300 mt-2 mb-1">Ihre Kontaktdaten:</div>
+                                <div><code class="bg-slate-800 px-2 py-1 rounded">{{contact.name}}</code> - Ihr Name</div>
+                                <div><code class="bg-slate-800 px-2 py-1 rounded">{{contact.address}}</code> - Ihre Adresse</div>
+                                <div><code class="bg-slate-800 px-2 py-1 rounded">{{contact.city}}</code> - Ihre Stadt</div>
+                                <div><code class="bg-slate-800 px-2 py-1 rounded">{{contact.postalCode}}</code> - PLZ</div>
+                                <div><code class="bg-slate-800 px-2 py-1 rounded">{{contact.email}}</code> - Ihre E-Mail</div>
+                                <div><code class="bg-slate-800 px-2 py-1 rounded">{{contact.phone}}</code> - Ihr Telefon</div>
+                                <div class="font-semibold text-slate-300 mt-2 mb-1">Sonstiges:</div>
+                                <div><code class="bg-slate-800 px-2 py-1 rounded">{{date}}</code> - Aktuelles Datum</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                        <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-sm">
+                            <h3 class="text-xl font-semibold text-slate-100 mb-4">Anschreiben-Vorlage</h3>
+                            <textarea 
+                                id="cover-letter-template" 
+                                class="w-full px-4 py-3 bg-slate-700 border border-slate-600 text-slate-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-y font-mono text-sm" 
+                                rows="20"
+                                placeholder="Sehr geehrte Damen und Herren,&#10;&#10;mit großem Interesse habe ich Ihre Stellenausschreibung für {{company.focus}} bei {{company.name}} gelesen...&#10;&#10;Mit freundlichen Grüßen&#10;Ihr Name"
+                                oninput="updateCoverLetterPreview()"
+                            ></textarea>
+                        </div>
+                        
+                        <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-sm">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="text-xl font-semibold text-slate-100">Vorschau</h3>
+                                <button class="px-4 py-2 bg-primary hover:bg-primary-600 text-white rounded-lg font-medium transition-colors text-sm" onclick="downloadCoverLetter()">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                                    Download
+                                </button>
+                            </div>
+                            <div 
+                                id="cover-letter-preview" 
+                                class="w-full px-4 py-3 bg-white text-slate-900 rounded-lg border border-slate-300 min-h-[400px] whitespace-pre-wrap font-serif text-sm leading-relaxed"
+                                style="min-height: 400px;"
+                            >
+                                <div class="text-slate-500 italic">Wählen Sie ein Unternehmen und geben Sie eine Vorlage ein, um die Vorschau zu sehen.</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-sm">
+                        <h3 class="text-lg font-semibold text-slate-100 mb-4">Vorlagen</h3>
+                        <div class="flex flex-wrap gap-3">
+                            <button class="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-lg font-medium transition-colors text-sm" onclick="loadCoverLetterTemplate('standard')">Standard-Vorlage</button>
+                            <button class="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-lg font-medium transition-colors text-sm" onclick="loadCoverLetterTemplate('formal')">Formelle Vorlage</button>
+                            <button class="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-lg font-medium transition-colors text-sm" onclick="loadCoverLetterTemplate('personal')">Persönliche Vorlage</button>
+                            <button class="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-lg font-medium transition-colors text-sm" onclick="clearCoverLetterTemplate()">Leeren</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -492,10 +584,12 @@
                 renderCompaniesTable();
             } else if (view === 'projects') {
                 renderProjects();
+            } else if (view === 'cover-letter') {
+                populateCoverLetterCompanies();
             }
             
             // Reload config if needed
-            if ((view === 'dashboard' || view === 'projects') && !config) {
+            if ((view === 'dashboard' || view === 'projects' || view === 'cover-letter') && !config) {
                 apiLoadConfig().then(cfg => {
                     config = cfg;
                     renderSidebarInfo();
@@ -503,6 +597,8 @@
                         renderDashboardInfoCards();
                     } else if (view === 'projects') {
                         renderProjects();
+                    } else if (view === 'cover-letter') {
+                        updateCoverLetterPreview();
                     }
                 }).catch(console.error);
             }
@@ -1000,6 +1096,275 @@
             link.href = URL.createObjectURL(blob);
             link.download = 'Betriebsliste_Praktikum_2026.csv';
             link.click();
+        }
+        
+        // Cover Letter Functions
+        function createCoverLetterFromDetail() {
+            if (currentDetailId) {
+                showView('cover-letter');
+                populateCoverLetterCompanies();
+                document.getElementById('cover-letter-company').value = currentDetailId;
+                updateCoverLetterPreview();
+            }
+        }
+        
+        function populateCoverLetterCompanies() {
+            const select = document.getElementById('cover-letter-company');
+            select.innerHTML = '<option value="">Bitte wählen...</option>';
+            companies.forEach(company => {
+                const option = document.createElement('option');
+                option.value = company.id;
+                option.textContent = company.name;
+                select.appendChild(option);
+            });
+        }
+        
+        function replacePlaceholders(template, company) {
+            if (!template) return template || '';
+            
+            let result = template;
+            
+            // Replace company placeholders
+            if (company) {
+                const companyPlaceholders = {
+                    '{{company.name}}': company.name || '',
+                    '{{company.contact}}': company.contact || '',
+                    '{{company.contactTitle}}': company.contactTitle || '',
+                    '{{company.city}}': company.city || '',
+                    '{{company.focus}}': company.focus || '',
+                    '{{company.industry}}': company.industry || '',
+                    '{{company.email}}': company.email || '',
+                    '{{company.phone}}': company.phone || '',
+                    '{{company.website}}': company.website || '',
+                };
+                
+                Object.keys(companyPlaceholders).forEach(placeholder => {
+                    const regex = new RegExp(placeholder.replace(/[{}]/g, '\\$&'), 'g');
+                    result = result.replace(regex, companyPlaceholders[placeholder]);
+                });
+            }
+            
+            // Replace contact placeholders from config
+            if (config && config.contact) {
+                const contactPlaceholders = {
+                    '{{contact.name}}': config.contact.name || '',
+                    '{{contact.address}}': config.contact.address || '',
+                    '{{contact.city}}': config.contact.city || '',
+                    '{{contact.postalCode}}': config.contact.postalCode || '',
+                    '{{contact.email}}': config.contact.email || '',
+                    '{{contact.phone}}': config.contact.phone || '',
+                };
+                
+                Object.keys(contactPlaceholders).forEach(placeholder => {
+                    const regex = new RegExp(placeholder.replace(/[{}]/g, '\\$&'), 'g');
+                    result = result.replace(regex, contactPlaceholders[placeholder]);
+                });
+            }
+            
+            // Replace date placeholder
+            const today = new Date();
+            const dateStr = today.toLocaleDateString('de-DE', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+            result = result.replace(/\{\{date\}\}/g, dateStr);
+            
+            return result;
+        }
+        
+        function updateCoverLetterPreview() {
+            const companyId = document.getElementById('cover-letter-company').value;
+            const template = document.getElementById('cover-letter-template').value;
+            const preview = document.getElementById('cover-letter-preview');
+            
+            if (!template) {
+                preview.innerHTML = '<div class="text-slate-500 italic">Geben Sie eine Vorlage ein, um die Vorschau zu sehen.</div>';
+                return;
+            }
+            
+            const company = companyId ? companies.find(c => c.id === parseInt(companyId)) : null;
+            if (companyId && !company) {
+                preview.innerHTML = '<div class="text-red-500">Unternehmen nicht gefunden.</div>';
+                return;
+            }
+            
+            // Ensure config is loaded
+            if (!config) {
+                apiLoadConfig().then(cfg => {
+                    config = cfg;
+                    const replaced = replacePlaceholders(template, company);
+                    preview.textContent = replaced || 'Keine Vorlage eingegeben.';
+                }).catch(() => {
+                    const replaced = replacePlaceholders(template, company);
+                    preview.textContent = replaced || 'Keine Vorlage eingegeben.';
+                });
+            } else {
+                const replaced = replacePlaceholders(template, company);
+                preview.textContent = replaced || 'Keine Vorlage eingegeben.';
+            }
+        }
+        
+        function downloadCoverLetter() {
+            const companyId = document.getElementById('cover-letter-company').value;
+            const template = document.getElementById('cover-letter-template').value;
+            
+            if (!template) {
+                alert('Bitte geben Sie eine Vorlage ein.');
+                return;
+            }
+            
+            const company = companyId ? companies.find(c => c.id === parseInt(companyId)) : null;
+            if (companyId && !company) {
+                alert('Unternehmen nicht gefunden.');
+                return;
+            }
+            
+            // Ensure config is loaded
+            if (!config) {
+                apiLoadConfig().then(cfg => {
+                    config = cfg;
+                    const replaced = replacePlaceholders(template, company);
+                    const filename = company 
+                        ? `Anschreiben_${company.name.replace(/[^a-z0-9]/gi, '_')}_${new Date().toISOString().split('T')[0]}.txt`
+                        : `Anschreiben_${new Date().toISOString().split('T')[0]}.txt`;
+                    
+                    const blob = new Blob([replaced], { type: 'text/plain;charset=utf-8;' });
+                    const link = document.createElement('a');
+                    link.href = URL.createObjectURL(blob);
+                    link.download = filename;
+                    link.click();
+                }).catch(() => {
+                    alert('Konfiguration konnte nicht geladen werden. Bitte versuchen Sie es erneut.');
+                });
+            } else {
+                const replaced = replacePlaceholders(template, company);
+                const filename = company 
+                    ? `Anschreiben_${company.name.replace(/[^a-z0-9]/gi, '_')}_${new Date().toISOString().split('T')[0]}.txt`
+                    : `Anschreiben_${new Date().toISOString().split('T')[0]}.txt`;
+                
+                const blob = new Blob([replaced], { type: 'text/plain;charset=utf-8;' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = filename;
+                link.click();
+            }
+        }
+        
+        function loadCoverLetterTemplate(type) {
+            const templateField = document.getElementById('cover-letter-template');
+            let template = '';
+            
+            switch(type) {
+                case 'standard':
+                    template = `{{contact.name}}
+{{contact.address}}
+{{contact.postalCode}} {{contact.city}}
+
+{{company.name}}
+{{company.contact}}
+{{company.city}}
+
+Sehr geehrte Damen und Herren,
+
+mit großem Interesse habe ich Ihre Stellenausschreibung für {{company.focus}} bei {{company.name}} gelesen. Als angehender Fachinformatiker für Systemintegration mit Schwerpunkt auf {{company.focus}} sehe ich in dieser Position eine ideale Möglichkeit, meine praktischen Fähigkeiten weiterzuentwickeln und wertvolle Erfahrungen zu sammeln.
+
+Während meiner Ausbildung habe ich bereits umfassende Kenntnisse in den Bereichen Netzwerktechnik, Systemintegration und IT-Infrastruktur erworben. Besonders interessiert mich die Arbeit bei {{company.name}}, da Ihr Unternehmen im Bereich {{company.industry}} tätig ist und somit perfekt zu meinen beruflichen Zielen passt.
+
+Ich bin überzeugt, dass ich mit meiner Motivation, meinem Engagement und meiner Lernbereitschaft einen wertvollen Beitrag zu Ihrem Team leisten kann. Gerne würde ich in einem persönlichen Gespräch mehr über die Position und Ihre Erwartungen erfahren.
+
+Über eine positive Rückmeldung würde ich mich sehr freuen.
+
+Mit freundlichen Grüßen
+
+{{contact.name}}
+
+Kontakt:
+E-Mail: {{contact.email}}
+Telefon: {{contact.phone}}`;
+                    break;
+                    
+                case 'formal':
+                    template = `{{contact.name}}
+{{contact.address}}
+{{contact.postalCode}} {{contact.city}}
+
+{{company.name}}
+{{company.contact}}
+{{company.contactTitle}}
+{{company.city}}
+
+{{company.city}}, {{date}}
+
+Betreff: Bewerbung um ein Praktikum als Fachinformatiker für Systemintegration
+
+Sehr geehrte/r {{company.contact}},
+
+hiermit bewerbe ich mich um ein Praktikum als Fachinformatiker für Systemintegration in Ihrem Unternehmen. Die Möglichkeit, meine theoretischen Kenntnisse in der Praxis anzuwenden und dabei von erfahrenen Fachkräften zu lernen, stellt für mich eine wertvolle Chance zur beruflichen Weiterentwicklung dar.
+
+Ihr Unternehmen {{company.name}} ist mir insbesondere durch Ihre Expertise im Bereich {{company.focus}} bekannt. Die Aussicht, in diesem Umfeld praktische Erfahrungen sammeln zu können, motiviert mich sehr.
+
+In meiner bisherigen Ausbildung habe ich fundierte Kenntnisse in folgenden Bereichen erworben:
+- Netzwerktechnik und -administration
+- Systemintegration und -wartung
+- IT-Infrastruktur
+- Cybersecurity-Grundlagen
+
+Ich bin überzeugt, dass ich mit meiner strukturierten Arbeitsweise und meinem Interesse an technischen Herausforderungen einen positiven Beitrag zu Ihrem Team leisten kann.
+
+Gerne stehe ich Ihnen für ein persönliches Gespräch zur Verfügung.
+
+Mit freundlichen Grüßen
+
+{{contact.name}}
+
+Kontakt:
+E-Mail: {{contact.email}}
+Telefon: {{contact.phone}}`;
+                    break;
+                    
+                case 'personal':
+                    template = `{{contact.name}}
+{{contact.address}}
+{{contact.postalCode}} {{contact.city}}
+
+{{company.name}}
+{{company.contact}}
+{{company.city}}
+
+Hallo {{company.contact}},
+
+ich hoffe, diese Nachricht erreicht Sie in guter Verfassung. Ich schreibe Ihnen, weil ich großes Interesse an einem Praktikum bei {{company.name}} habe.
+
+Als angehender Fachinformatiker für Systemintegration bin ich auf der Suche nach einer Möglichkeit, meine Fähigkeiten im Bereich {{company.focus}} praktisch anzuwenden. {{company.name}} hat mich besonders angesprochen, da Sie in {{company.city}} ansässig sind und im Bereich {{company.industry}} tätig sind.
+
+Was mich besonders interessiert:
+- Die praktische Anwendung meiner Kenntnisse in einem realen Arbeitsumfeld
+- Die Möglichkeit, von erfahrenen Kolleginnen und Kollegen zu lernen
+- Die Chance, innovative Projekte im Bereich {{company.focus}} kennenzulernen
+
+Ich bin sehr motiviert, einen Beitrag zu Ihrem Team zu leisten und gleichzeitig wertvolle Erfahrungen für meine berufliche Zukunft zu sammeln.
+
+Würden Sie Zeit für ein kurzes Gespräch haben? Ich würde mich sehr freuen, mehr über mögliche Praktikumsmöglichkeiten zu erfahren.
+
+Vielen Dank für Ihre Zeit und Aufmerksamkeit.
+
+Beste Grüße
+{{contact.name}}
+
+Kontakt:
+E-Mail: {{contact.email}}
+Telefon: {{contact.phone}}`;
+                    break;
+            }
+            
+            templateField.value = template;
+            updateCoverLetterPreview();
+        }
+        
+        function clearCoverLetterTemplate() {
+            document.getElementById('cover-letter-template').value = '';
+            updateCoverLetterPreview();
         }
         
         // Initialize on load

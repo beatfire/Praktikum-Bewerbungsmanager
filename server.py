@@ -141,7 +141,15 @@ def get_default_config() -> dict:
                 "relevance": "Cloud Computing, Systemintegration",
                 "complexity": "Hoch"
             }
-        ]
+        ],
+        "contact": {
+            "name": "[Ihr Name]",
+            "address": "[Ihre Adresse]",
+            "city": "[Ihre Stadt]",
+            "postalCode": "[PLZ]",
+            "email": "[Ihre E-Mail]",
+            "phone": "[Ihr Telefon]"
+        }
     }
 
 
